@@ -19,15 +19,29 @@ class LyricSlideGenerator:
         generate_button = tk.Button(root, text="Generate PowerPoint", command=self.generate_powerpoint)
         generate_button.pack(pady=10)
 
-        # Set the path to your template.pptx
-        self.template_path = r"E:\Coding Projects\Python\Powerpoint Generator\template\template.pptx"
-        self.check_template()
+        # Define template path
+        self.template_path = os.path.join(os.path.expanduser("~"), "Documents", "template", "template.pptx")
+        self.ensure_template_exists()
 
-    def check_template(self):
-        # Check if template.pptx exists at the specified path
+    def ensure_template_exists(self):
+        # Check if the template file exists; if not, prompt the user to create it
         if not os.path.exists(self.template_path):
-            messagebox.showerror("Error", "template.pptx not found at the specified path.")
-            self.root.destroy()
+            response = messagebox.askyesno("Template Missing", "Template file not found. Would you like to create a template in the Documents folder?")
+            if response:
+                template_dir = os.path.dirname(self.template_path)
+                os.makedirs(template_dir, exist_ok=True)
+                
+                # Create a basic template presentation
+                prs = Presentation()
+                slide = prs.slides.add_slide(prs.slide_layouts[5])
+                title = slide.shapes.title
+                title.text = "Sample Title"
+                
+                prs.save(self.template_path)
+                messagebox.showinfo("Template Created", "A template.pptx has been created in the Documents/template folder. You can now use the program.")
+            else:
+                messagebox.showwarning("Template Required", "Please add a template.pptx to the Documents/template folder to proceed.")
+                self.root.destroy()
 
     def generate_powerpoint(self):
         lines = self.lyric_text.get("1.0", tk.END).strip().split("\n\n")  # Split by empty lines to identify stanzas
@@ -55,10 +69,8 @@ class LyricSlideGenerator:
                 textbox.text_frame.text = stanza.strip()
                 textbox.width = int(Inches(9))
                 textbox.height = int(Inches(5))
-                textbox_left = (prs.slide_width - textbox.width) // 2
-                textbox_top = (prs.slide_height - textbox.height) // 2
-                textbox.left = textbox_left
-                textbox.top = textbox_top
+                textbox.left = (prs.slide_width - textbox.width) // 2
+                textbox.top = (prs.slide_height - textbox.height) // 2
 
             textbox.vertical_anchor = 0.5  # Middle vertical alignment
             textbox.text = stanza.strip()

@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('E:\\Coding Projects\\Python\\Powerpoint Generator\\template', 'template')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -34,4 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['E:\\Coding Projects\\Python\\Powerpoint Generator\\final lyrics to pptx\\icon.ico'],
 )
